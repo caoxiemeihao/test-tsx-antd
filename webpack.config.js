@@ -51,20 +51,21 @@ module.exports = env => {
       extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
     },
     plugins: [
-      // 管 jsx 更新
-      new webpack.HotModuleReplacementPlugin(),
       new HtmlWebpackPlugin({
         template: resolve('public/index.html'),
       }),
       new CopyWebpackPlugin(),
       ...(isDev ? [
-
+        // 管 jsx 更新
+        // This is necessary to emit hot updates (currently CSS only):
+        new webpack.HotModuleReplacementPlugin(),
       ] : [
           new CleanWebpackPlugin({ from: resolve('public'), to: resolve('dist') }),
         ]),
     ],
     devServer: {
       // 管 less 更新
+      // 请注意，当前只有对CSS的更改是热重加载的。JS更改将刷新浏览器。
       hot: true,
       port: 3000,
       stats: 'minimal',
