@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -50,6 +51,8 @@ module.exports = env => {
       extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
     },
     plugins: [
+      // 管 jsx 更新
+      new webpack.HotModuleReplacementPlugin(),
       new HtmlWebpackPlugin({
         template: resolve('public/index.html'),
       }),
@@ -57,10 +60,12 @@ module.exports = env => {
       ...(isDev ? [
 
       ] : [
-          new CopyWebpackPlugin(),
+          new CleanWebpackPlugin({ from: resolve('public'), to: resolve('dist') }),
         ]),
     ],
     devServer: {
+      // 管 less 更新
+      hot: true,
       port: 3000,
       stats: 'minimal',
     },
